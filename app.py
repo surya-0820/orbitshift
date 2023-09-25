@@ -8,7 +8,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, Trai
 from transformers import DataCollatorWithPadding
 import numpy as np
 
-# 2. Create the app object
+# Create the app object
 app = FastAPI()
 
 
@@ -17,13 +17,20 @@ print ("Device ", torch_device)
 torch.set_grad_enabled(False)
 
 
-model_name = "D:\orbit_project\my_model"  
-model = AutoModelForSequenceClassification.from_pretrained(model_name)
-model = model.to(torch_device)
+model_name = "bert-base-uncased"
+model = AutoModelForSequenceClassification.from_pretrained(model_name).to(torch_device)
 
-tokenizer = AutoTokenizer.from_pretrained("bert-base-uncased")
+tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-# 3. Index route, opens automatically on http://127.0.0.1:8000
+
+
+# Index route, opens automatically on http://127.0.0.1:8000
+
+@app.get('/')
+def home():
+    return {"message": "Hello World"}
+
+
 @app.get('/predict')
 def predict_title(title: str):
     encoded_input = tokenizer(title, return_tensors='pt')
@@ -35,10 +42,3 @@ def predict_title(title: str):
 
     return {'predicted class':  prediction_value }
 
-
-
-# 5. Run the API with uvicorn
-#    Will run on http://127.0.0.1:8000
-if __name__ == '__main__':
-    uvicorn.run(app, host='127.0.0.1', port=8000)
-#uvicorn app:app --reload

@@ -1,0 +1,6 @@
+In the EC2 instance, runt the following
+Step1: pip install transformers==4.33.2
+step2: pip install torch==2.0.1
+Step3: python download_HF_classification.py
+Step4: docker build -t summarization .
+Step5: docker run -p 80:80 --gpus all summarization
